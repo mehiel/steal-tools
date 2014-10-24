@@ -1061,6 +1061,36 @@ describe("pluginifier builder", function(){
 	});
 });
 
+describe("@config with dependencies", function(){
+
+	it.only("works build", function(done){
+		rmdir(__dirname + "/config_deps/dist", function(error){
+			if(error) {
+				return done(error);
+			}
+
+			multiBuild({
+				config: __dirname + "/config_deps/config.js",
+				main: "main"
+			}, {
+				quiet: true,
+				minify: false
+			}).then(function(){
+				open("test/config_deps/prod.html", function(browser, close){
+
+					find(browser,"moduleValue", function(moduleValue){
+						assert.equal(moduleValue, "three", "@config deps works.");
+						close();
+					}, close);
+
+				}, done);
+
+			}).catch(done);
+		});
+	});
+
+});
+
 describe("@loader used in configs", function() {
 	
 	it("works built", function(done) {
